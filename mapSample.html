@@ -1,0 +1,60 @@
+<html>
+<head>
+    <title>A Leaflet map!</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+
+    <link rel="stylesheet" src="MarkerCluster.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="leaflet.markercluster.js"></script>
+
+
+    <script src="jquery-2.1.1.min.js"></script>
+    <style>
+        #map{ width: 900px; height: 500px; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+    // initialize the map
+    var map = L.map('map').setView([23.77, 90.39], 7);
+
+    var mapboxTiles = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>',
+                id: 'pdfarhad.obmo8cdp', maxzoom: 18,
+                accessToken: 'pk.eyJ1IjoicGRmYXJoYWQiLCJhIjoiY2locTBtZnBvMDRkanRzbTJiNzk4b285ZSJ9.7MScupb0IKWMJ2pdGkpeoQ'
+    });
+    map.addLayer(mapboxTiles);
+
+    // load GeoJSON from an external file
+  $.getJSON("districtgeo.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+        L.geoJson(data, {
+            style: function (feature) {
+                var fillColor,
+                    density = feature.properties.Count_;
+                if ( density > 800 ) fillColor = "#006837";
+                else if ( density > 600 ) fillColor = "#31a354";
+                else if ( density > 400 ) fillColor = "#78c679";
+                else if ( density > 200 ) fillColor = "#c2e699";
+                else if ( density > 0 ) fillColor = "#ffffcc";
+                else fillColor = "#f7f7f7";  // no data
+                return { color: "#999", weight: 1, fillColor: fillColor, fillOpacity: .6 };
+
+
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.LB_BB_DIS +" "+ feature.properties.Count_);
+            }
+        }).addTo(map);
+  });
+
+
+
+</script>
+
+</body>
+</html>
