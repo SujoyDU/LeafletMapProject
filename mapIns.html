@@ -52,27 +52,63 @@
         }).addTo(map);
   });
 
+    var districts = ["BAGERHAT", "BANDARBAN", "BARGUNA", "BARISAL", "BHOLA", "BOGRA", "BRAHAMANBARIA",
+        "CHANDPUR", "CHITTAGONG", "CHUADANGA", "COMILLA", "DHAKA", "DINAJPUR", "FARIDPUR", "FENI",
+        "GAIBANDHA", "GAZIPUR", "GOPALGANJ", "HABIGANJ", "JAMALPUR", "JESSORE", "JHALOKATI", "JHENAIDAH", "JOYPURHAT",
+        "KHAGRACHHARI", "KHULNA", "KISHOREGANJ", "KURIGRAM", "KUSHTIA", "LAKSHMIPUR", "LALMONIRHAT",
+        "MADARIPUR", "MAGURA", "MANIKGANJ", "MAULVIBAZAR", "MEHERPUR", "MUNSHIGANJ", "MYMENSINGH",
+        "NAOGAON", "NARAYANGANJ", "NARSINGDI", "NATORE", "NETRAKONA", "NILPHAMARI", "NOAKHALI",
+        "PABNA", "PANCHAGARH", "PATUAKHALI", "PIROJPUR", "RAJBARI", "RAJSHAHI", "RANGAMATI", "RANGPUR",
+        "SATKHIRA", "SHARIATPUR", "SHERPUR", "SIRAJGANJ", "SUNAMGANJ", "SYLHET", "TANGAIL", "THAKURGAON"]
 
-  $.getJSON("insFiles.geojson",function(data){
-        var insIcon = L.icon({
-            iconUrl: 'university.png',
-            iconSize: [50,40]
+    districts.forEach(function(item, index) {
+        console.log(item, index);
+
+        $.getJSON("geojson/"+item+".geojson",function(data){
+            var insIcon = L.icon({
+                iconUrl: 'university.png',
+                iconSize: [50,40]
+            });
+            var institutes = L.geoJson(data  ,{
+                pointToLayer: function(feature,latlng){
+                    var marker = L.marker(latlng,{icon: insIcon});
+                    marker.bindPopup(feature.properties.inst_name + '<br/>' + feature.properties.inst_type);
+                    return marker;
+
+                }
+            });
+            var clusters = L.markerClusterGroup();
+            clusters.addLayer(institutes);
+            map.addLayer(clusters);
+
+
         });
-        var institutes = L.geoJson(data  ,{
-            pointToLayer: function(feature,latlng){
-//                return L.marker(latlng,{icon: ratIcon});
-                var marker = L.marker(latlng,{icon: insIcon});
-                marker.bindPopup(feature.properties.inst_name+ '<br/>' + feature.properties.inst_type);
-                return marker;
-
-            }
-        }); // .addTo(map);
-        var clusters = L.markerClusterGroup();
-        clusters.addLayer(institutes);
-        map.addLayer(clusters);
-
-
     });
+
+
+//  $.getJSON("bagerhat.geojson",function(data){
+//        var insIcon = L.icon({
+//            iconUrl: 'university.png',
+//            iconSize: [50,40]
+//        });
+//        var institutes = L.geoJson(data  ,{
+//            pointToLayer: function(feature,latlng){
+//                var marker = L.marker(latlng,{icon: insIcon});
+//                marker.bindPopup(feature.properties.inst_name+ '<br/>' + feature.properties.inst_type);
+//                return marker;
+//
+//            }
+//        });
+//        var clusters = L.markerClusterGroup();
+//        clusters.addLayer(institutes);
+//        map.addLayer(clusters);
+//
+//
+//    });
+
+
+
+
 
 
 
